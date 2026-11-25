@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#090817">
+    <meta name="description" content="Un album privato, fatto di ricordi e parole nostre.">
+    <title>Xsempre — il nostro album</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <script type="module" src="/src/main.js"></script>
+  </head>
+  <body>
+    <div class="sky" aria-hidden="true">
+      <span class="orb orb--violet"></span>
+      <span class="orb orb--blue"></span>
+      <span class="orb orb--cyan"></span>
+      <span class="stars"></span>
+    </div>
+    <main>
+      <section class="gate" id="login-screen" aria-labelledby="gate-title">
+        <div class="gate-card">
+          <div class="gate-mark" aria-hidden="true">✦</div>
+          <p class="eyebrow">un posto tutto nostro</p>
+          <h1 id="gate-title">Il nostro album.</h1>
+          <p class="gate-copy">Accedi con l’email autorizzata per entrare nel nostro piccolo universo.</p>
+          <form id="login-form" class="password-form">
+            <label class="sr-only" for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="username" placeholder="La tua email" required>
+            <label class="sr-only" for="password">Password</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Password" required>
+            <button class="button button--primary" type="submit">Entra <span aria-hidden="true">↗</span></button>
+          </form>
+          <p class="gate-message" id="login-message" role="status" aria-live="polite"></p>
+          <button class="auth-mode-toggle" id="registration-toggle" type="button">È il tuo primo accesso? Crea un account.</button>
+          <p class="gate-footnote">Le credenziali vengono verificate da Firebase.</p>
+        </div>
+      </section>
+
+      <section class="gate" id="loading-screen" aria-live="polite" hidden>
+        <div class="gate-card">
+          <div class="gate-mark" aria-hidden="true">✦</div>
+          <p class="eyebrow">un momento</p>
+          <h1>Sto aprendo il nostro album…</h1>
+          <p class="gate-copy" id="loading-message">Connessione sicura in corso.</p>
+        </div>
+      </section>
+
+      <section class="gate" id="setup-screen" aria-labelledby="setup-title" hidden>
+        <div class="gate-card">
+          <div class="gate-mark" aria-hidden="true">✦</div>
+          <p class="eyebrow">primo accesso</p>
+          <h1 id="setup-title">Prepariamo le pagine.</h1>
+          <p class="gate-copy">I ricordi iniziali sono conservati in un file privato sul tuo computer. Selezionalo una volta per copiarli nel nostro album Firebase.</p>
+          <form id="import-form" class="password-form">
+            <label for="seed-file">File privato dei ricordi</label>
+            <input id="seed-file" type="file" accept="application/json,.json" required>
+            <button class="button button--primary" type="submit">Importa i ricordi <span aria-hidden="true">↗</span></button>
+          </form>
+          <p class="gate-message" id="setup-message" role="status" aria-live="polite"></p>
+          <button class="button button--quiet" id="setup-signout" type="button">Esci</button>
+        </div>
+      </section>
+
+      <div id="album" class="album" hidden>
+        <header class="topbar">
+          <a class="wordmark" href="#inizio"><span aria-hidden="true">✦</span> noi, in ogni pagina</a>
+          <div class="topbar-actions">
+            <a class="topbar-link" href="#ricordi">Scorri il nostro album <span aria-hidden="true">↓</span></a>
+            <button class="button button--quiet" id="signout-button" type="button">Esci</button>
+          </div>
+        </header>
+        <section class="hero" id="inizio">
+          <div class="hero-content reveal">
+            <p class="eyebrow"><span class="sparkle" aria-hidden="true">✦</span><span id="album-hero-eyebrow"></span></p>
+            <h1 id="album-title"></h1>
+            <p id="album-intro" class="hero-copy"></p>
+            <a class="button button--primary hero-button" href="#ricordi">Entra nel nostro mondo <span aria-hidden="true">↓</span></a>
+          </div>
+          <div class="hero-art reveal" aria-hidden="true">
+            <div class="orbit orbit--one"></div><div class="orbit orbit--two"></div><div class="orbit orbit--three"></div>
+            <div class="heart">♡</div>
+            <span class="floating-star floating-star--one">✦</span><span class="floating-star floating-star--two">✧</span>
+            <span class="floating-star floating-star--three">✦</span>
+          </div>
+          <div class="scroll-hint" aria-hidden="true"><span></span> continua a scendere</div>
+        </section>
+
+        <section class="intro section-wrap reveal" id="ricordi">
+          <p class="eyebrow">capitolo uno · la nostra storia</p>
+          <h2>Un piccolo universo.<br><span>Un amore immenso.</span></h2>
+          <p id="album-dedication" class="section-copy"></p>
+        </section>
+
+        <section class="timeline section-wrap" id="memories-list" aria-label="Le date importanti della nostra storia"></section>
+        <section class="section-wrap add-memory-section">
+          <details class="add-entry-details">
+            <summary class="button button--quiet">＋ Aggiungi un ricordo</summary>
+            <form id="memory-form" class="entry-form">
+              <h3>Un nuovo ricordo</h3>
+              <label>Data <input name="date" type="text" maxlength="80" placeholder="es. una data importante"></label>
+              <label>Titolo <input name="title" type="text" maxlength="120" required></label>
+              <label>La storia <textarea name="text" maxlength="2000" rows="4" required></textarea></label>
+              <button class="button button--primary" type="submit">Aggiungi alla storia</button>
+              <p class="form-message" role="status"></p>
+            </form>
+          </details>
+        </section>
+
+        <section class="memory-grid section-wrap" aria-label="Le pagine del nostro album">
+          <article class="memory-card memory-card--wide reveal">
+            <div class="card-icon" aria-hidden="true">✧</div>
+            <p class="eyebrow">i nostri momenti</p>
+            <h3>Le cose belle<br>succedono insieme.</h3>
+            <p>Un posto per le foto che ci fanno sorridere ancora, anche dopo averle viste mille volte.</p>
+            <button class="photo-placeholder photo-placeholder--wide" type="button" data-open-dialog="photos-dialog" aria-haspopup="dialog">
+              <span>La nostra prima foto qui</span><span class="placeholder-plus" aria-hidden="true">＋</span>
+              <span class="sr-only">Apri il menu delle nostre foto</span>
+            </button>
+          </article>
+          <article class="memory-card memory-card--quote reveal">
+            <div class="card-icon" aria-hidden="true">“</div>
+            <p class="eyebrow">parole nostre</p>
+            <h3>Quelle frasi<br>che restano.</h3>
+            <p>Messaggi, promesse e parole piccole che per noi significano tutto.</p>
+            <button class="button button--quiet" type="button" data-open-dialog="phrases-dialog" aria-haspopup="dialog">Leggi le nostre frasi <span aria-hidden="true">↗</span></button>
+          </article>
+          <article class="memory-card memory-card--small reveal">
+            <div class="card-icon" aria-hidden="true">♡</div>
+            <p class="eyebrow" id="album-milestone"></p>
+            <h3>E il bello<br>deve ancora arrivare.</h3>
+            <p>Una piccola celebrazione di tutto quello che abbiamo costruito insieme.</p>
+          </article>
+          <article class="memory-card memory-card--small memory-card--glow reveal">
+            <div class="card-icon" aria-hidden="true">☾</div>
+            <p class="eyebrow">il nostro mondo</p>
+            <h3>Solo noi<br>capiamo.</h3>
+            <p>Dentro ci stanno le battute, i posti e i momenti che hanno il nostro nome.</p>
+            <button class="button button--quiet spicy-button" type="button" data-open-dialog="spicy-dialog" aria-haspopup="dialog">Spicy <span aria-hidden="true">✦</span></button>
+          </article>
+          <article class="memory-card memory-card--small reveal">
+            <div class="card-icon" aria-hidden="true">🐾</div>
+            <p class="eyebrow" id="album-pet-eyebrow"></p>
+            <h3 id="album-pet-title"></h3>
+            <p id="album-pet-contract"></p>
+          </article>
+          <article class="memory-card memory-card--apology reveal">
+            <div>
+              <div class="card-icon" aria-hidden="true">♡</div>
+              <p class="eyebrow">una cosa che voglio dirti</p>
+              <h3 id="album-apology-title"></h3>
+            </div>
+            <div class="apology-copy" id="album-apology"></div>
+          </article>
+        </section>
+
+        <section class="story-details section-wrap" aria-label="Le cose che amo di te e la nostra canzone">
+          <article class="song-card reveal">
+            <div class="record" aria-hidden="true"><span>♫</span></div>
+            <div>
+              <p class="eyebrow">la nostra colonna sonora</p>
+              <h2 id="album-song"></h2>
+              <p class="song-artist" id="album-song-artist"></p>
+              <p class="story-copy" id="album-song-note"></p>
+            </div>
+          </article>
+          <article class="little-things-card reveal">
+            <p class="eyebrow">le piccole cose che amo di te</p>
+            <h2>Ti guardo<br>con gli occhi a cuore.</h2>
+            <div class="little-things-copy" id="album-little-things"></div>
+          </article>
+        </section>
+
+        <section class="next-page section-wrap reveal" aria-labelledby="next-page-title">
+          <p class="eyebrow">quello che sogniamo ancora</p>
+          <h2 id="next-page-title">La nostra prossima pagina.</h2>
+          <p id="album-wishes-intro" class="next-page-intro"></p>
+          <div class="wish-grid">
+            <button class="wish-card feature-tile" type="button" data-open-dialog="wishes-dialog" aria-haspopup="dialog">
+              <span class="wish-icon" aria-hidden="true">✧</span>
+              <p class="eyebrow">la nostra prossima pagina</p>
+              <h3>I nostri desideri</h3>
+              <p class="feature-count" id="wishes-count"></p>
+              <span class="feature-action">Apri questa pagina <span aria-hidden="true">↗</span></span>
+            </button>
+            <button class="wish-card wish-card--home feature-tile" type="button" data-open-dialog="photos-dialog" aria-haspopup="dialog">
+              <span class="wish-icon" aria-hidden="true">⌂</span>
+              <p class="eyebrow">i nostri momenti</p>
+              <h3>Le nostre foto</h3>
+              <p class="feature-count">Date e ricordi da sfogliare</p>
+              <span class="feature-action">Apri questa pagina <span aria-hidden="true">↗</span></span>
+            </button>
+          </div>
+        </section>
+
+        <section class="christmas-reveal section-wrap reveal">
+          <button class="christmas-card" type="button" data-open-dialog="christmas-dialog" aria-haspopup="dialog">
+            <span class="christmas-gift" aria-hidden="true">🎁</span>
+            <span class="eyebrow">un piccolo regalo per te</span>
+            <span class="christmas-title" id="christmas-card-title"></span>
+            <span class="christmas-copy" id="christmas-card-copy"></span>
+          </button>
+        </section>
+
+        <dialog class="modal" id="phrases-dialog" aria-labelledby="phrases-title">
+          <div class="modal-card">
+            <button class="modal-close" type="button" data-close-dialog aria-label="Chiudi">×</button>
+            <p class="eyebrow">parole nostre</p>
+            <h2 id="phrases-title">Quelle frasi che restano.</h2>
+            <div id="phrases-list" class="entry-list"></div>
+            <details class="add-entry-details">
+              <summary class="button button--quiet">＋ Aggiungi una frase</summary>
+              <form id="phrase-form" class="entry-form">
+                <h3>Una frase da custodire</h3>
+                <label>La frase <textarea name="text" maxlength="500" rows="3" required></textarea></label>
+                <button class="button button--primary" type="submit">Custodisci la frase</button>
+                <p class="form-message" role="status"></p>
+              </form>
+            </details>
+          </div>
+        </dialog>
+
+        <dialog class="modal" id="wishes-dialog" aria-labelledby="wishes-title">
+          <div class="modal-card">
+            <button class="modal-close" type="button" data-close-dialog aria-label="Chiudi">×</button>
+            <p class="eyebrow">quello che sogniamo ancora</p>
+            <h2 id="wishes-title">I nostri desideri.</h2>
+            <p id="wishes-dialog-intro" class="modal-copy"></p>
+            <div id="wishes-list" class="entry-list"></div>
+            <details class="add-entry-details">
+              <summary class="button button--quiet">＋ Aggiungi un desiderio</summary>
+              <form id="wish-form" class="entry-form">
+                <h3>Un nuovo desiderio</h3>
+                <label>Il nostro sogno <textarea name="text" maxlength="500" rows="3" required></textarea></label>
+                <button class="button button--primary" type="submit">Aggiungi il desiderio</button>
+                <p class="form-message" role="status"></p>
+              </form>
+            </details>
+          </div>
+        </dialog>
+
+        <dialog class="modal" id="spicy-dialog" aria-labelledby="spicy-title">
+          <div class="modal-card">
+            <button class="modal-close" type="button" data-close-dialog aria-label="Chiudi">×</button>
+            <p class="eyebrow">il nostro codice segreto</p>
+            <h2 id="spicy-title">Parole che capiamo solo noi.</h2>
+            <p class="modal-copy">Piccoli nomi, ricordi e parole del nostro mondo.</p>
+            <ul id="code-words" class="spicy-words"></ul>
+          </div>
+        </dialog>
+
+        <dialog class="modal" id="photos-dialog" aria-labelledby="photos-title">
+          <div class="modal-card">
+            <button class="modal-close" type="button" data-close-dialog aria-label="Chiudi">×</button>
+            <p class="eyebrow">i nostri ricordi, in foto</p>
+            <h2 id="photos-title">Le nostre foto.</h2>
+            <p class="modal-copy">Qui potremo custodire foto, date e le storie che le accompagnano.</p>
+            <div id="photo-menu" class="photo-menu"></div>
+            <p class="photo-menu-note">Il caricamento delle immagini è in pausa finché non decidiamo se attivare il piano Firebase con archiviazione.</p>
+          </div>
+        </dialog>
+
+        <dialog class="modal christmas-modal" id="christmas-dialog" aria-labelledby="christmas-title">
+          <div class="modal-card">
+            <button class="modal-close" type="button" data-close-dialog aria-label="Chiudi">×</button>
+            <p class="eyebrow">il tuo regalo è ancora sigillato</p>
+            <h2 id="christmas-title"></h2>
+            <p id="album-christmas" class="modal-copy"></p>
+            <div class="sealed-letter" aria-hidden="true">✉</div>
+          </div>
+        </dialog>
+
+        <section class="ending reveal">
+          <div class="ending-star" aria-hidden="true">✦</div>
+          <p class="eyebrow">e questa è solo la prima pagina</p>
+          <h2 id="album-closing-title"></h2>
+          <p id="album-closing-note"></p>
+          <a class="back-to-top" href="#inizio">Ricomincia da qui <span aria-hidden="true">↑</span></a>
+        </section>
+        <footer class="footer">fatto con tutto il mio amore <span aria-hidden="true">♡</span></footer>
+      </div>
+    </main>
+  </body>
+</html>

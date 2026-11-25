@@ -1,0 +1,75 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAlbumMember() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.uid in [
+          "4l9aA6AOKpMr7dv0yMZplbDuZ7c2"
+        ];
+    }
+
+    match /album/{documentId} {
+      allow read: if isAlbumMember();
+      allow create, update: if isAlbumMember() && documentId == "content";
+      allow delete: if false;
+    }
+
+    match /phrases/{phraseId} {
+      allow read: if isAlbumMember();
+      allow create: if isAlbumMember()
+        && request.resource.data.keys().hasOnly(["text", "position", "createdAt", "createdBy"])
+        && request.resource.data.text is string
+        && request.resource.data.text.size() > 0
+        && request.resource.data.text.size() <= 500
+        && request.resource.data.position is number
+        && request.resource.data.createdBy == request.auth.uid;
+      allow update: if false;
+      allow delete: if isAlbumMember() && resource.data.createdBy == request.auth.uid;
+    }
+
+    match /memories/{memoryId} {
+      allow read: if isAlbumMember();
+      allow create: if isAlbumMember()
+        && request.resource.data.keys().hasOnly(["date", "title", "text", "position", "createdAt", "createdBy"])
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() <= 120
+        && request.resource.data.text is string
+        && request.resource.data.text.size() <= 2000
+        && request.resource.data.position is number
+        && request.resource.data.createdBy == request.auth.uid;
+      allow update: if false;
+      allow delete: if isAlbumMember() && resource.data.createdBy == request.auth.uid;
+    }
+
+    match /wishes/{wishId} {
+      allow read: if isAlbumMember();
+      allow create: if isAlbumMember()
+        && request.resource.data.keys().hasOnly(["text", "position", "createdAt", "createdBy"])
+        && request.resource.data.text is string
+        && request.resource.data.text.size() > 0
+        && request.resource.data.text.size() <= 500
+        && request.resource.data.position is number
+        && request.resource.data.createdBy == request.auth.uid;
+      allow update: if false;
+      allow delete: if isAlbumMember() && resource.data.createdBy == request.auth.uid;
+    }
+
+    match /photos/{photoId} {
+      allow read: if isAlbumMember();
+      allow create: if isAlbumMember()
+        && request.resource.data.keys().hasOnly(["date", "caption", "storagePath", "createdAt", "createdBy"])
+        && request.resource.data.caption is string
+        && request.resource.data.caption.size() <= 300
+        && request.resource.data.storagePath is string
+        && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "xsempre",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "deploy": "npm run build && firebase deploy --only hosting,firestore:rules --project xsempre-album-2026-niesta"
+  },
+  "dependencies": {
+    "firebase": "^13.4.0"
+  },
+  "devDependencies": {
+    "firebase-tools": "^15.37.0",
+    "vite": "^8.3.8"
+  },
+  "overrides": {
+    "@grpc/grpc-js": "^1.14.7"
+  }
+}
